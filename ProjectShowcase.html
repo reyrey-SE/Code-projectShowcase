@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Showcase Portfolio</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2D3436',
+                        secondary: '#636E72',
+                        accent: '#00B894'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .project-card {
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        .category-chip {
+            transition: all 0.2s ease;
+        }
+        .category-chip:hover {
+            transform: translateY(-2px);
+        }
+        .category-chip.active {
+            background-color: #636E72 !important;
+            transform: scale(1.05);
+        }
+        .project-image {
+            position: relative;
+            overflow: hidden;
+            height: 200px;
+        }
+        .project-image img {
+            transition: transform 0.5s ease;
+        }
+        .project-card:hover .project-image img {
+            transform: scale(1.05);
+        }
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 184, 148, 0.8);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .project-card:hover .image-overlay {
+            opacity: 1;
+        }
+        .preview-text {
+            transform: translateY(20px);
+            transition: transform 0.3s;
+            color: white;
+            font-weight: 500;
+        }
+        .project-card:hover .preview-text {
+            transform: translateY(0);
+        }
+        .tech-badge {
+            transition: all 0.2s ease;
+        }
+        .tech-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+            transform: translateY(20px);
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-['Pacifico'] text-white">DevShowcase</div>
+                    <div class="hidden md:block ml-10">
+                        <div class="flex items-center space-x-8">
+                            <a href="#" class="text-white hover:text-accent px-3 py-2 text-sm font-medium">Home</a>
+                            <a href="#" class="text-accent border-b-2 border-accent px-3 py-2 text-sm font-medium">Projects</a>
+                            <a href="#" class="text-white hover:text-accent px-3 py-2 text-sm font-medium">Technologies</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative bg-gray-900 overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="relative z-10 pb-8 bg-gray-900 sm:pb-16 md:pb-20 lg:w-full lg:pb-28 xl:pb-32">
+                <div class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+                    <div class="text-center">
+                        <h1 class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
+                            <span class="block">Project Showcase</span>
+                            <span class="block text-accent mt-2">Technical Demonstrations</span>
+                        </h1>
+                        <p class="mt-3 max-w-md mx-auto text-base text-gray-400 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+                            A collection of technical projects demonstrating various skills and technologies. Filter by category to explore.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <div class="flex flex-wrap justify-center gap-3 mb-10">
+            <button class="category-chip filter-btn bg-accent text-white px-4 py-2 !rounded-button active" data-category="all">
+                All Projects
+            </button>
+            <button class="category-chip filter-btn bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 !rounded-button" data-category="web">
+                Web Apps
+            </button>
+            <button class="category-chip filter-btn bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 !rounded-button" data-category="mobile">
+                Mobile Apps
+            </button>
+            <button class="category-chip filter-btn bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 !rounded-button" data-category="ai">
+                AI/ML
+            </button>
+            <button class="category-chip filter-btn bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 !rounded-button" data-category="iot">
+                IoT
+            </button>
+        </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Project Card 1 -->
+            <div class="project-card bg-gray-800 rounded-xl overflow-hidden shadow-lg" data-categories="web">
+                <div class="project-image relative">
+                    <img class="w-full h-full object-cover" src="https://source.unsplash.com/random/600x400/?dashboard,webapp" alt="Web Dashboard">
+                    <div class="image-overlay">
+                        <span class="preview-text">View Dashboard Details</span>
+                    </div>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2 text-white">Analytics Dashboard</div>
+                    <p class="text-gray-300 text-sm line-clamp-2">
+                        A responsive admin dashboard with real-time data visualization and user management features.
+                    </p>
+                </div>
+                <div class="px-6 pt-2 pb-4">
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-reactjs-line mr-1"></i> React
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-nodejs-line mr-1"></i> Node.js
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-database-2-line mr-1"></i> MongoDB
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="inline-block bg-accent bg-opacity-20 rounded-full px-3 py-1 text-xs font-semibold text-accent">
+                            Web Application
+                        </span>
+                        <button class="project-preview w-8 h-8 flex items-center justify-center bg-gray-700 hover:bg-accent rounded-full transition-colors">
+                            <i class="ri-eye-line text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="project-card bg-gray-800 rounded-xl overflow-hidden shadow-lg" data-categories="mobile">
+                <div class="project-image relative">
+                    <img class="w-full h-full object-cover" src="https://source.unsplash.com/random/600x400/?mobile,app" alt="Mobile App">
+                    <div class="image-overlay">
+                        <span class="preview-text">View Mobile App Details</span>
+                    </div>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2 text-white">Fitness Tracker</div>
+                    <p class="text-gray-300 text-sm line-clamp-2">
+                        Cross-platform mobile application for tracking workouts, nutrition, and health metrics.
+                    </p>
+                </div>
+                <div class="px-6 pt-2 pb-4">
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-flutter-line mr-1"></i> Flutter
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-firebase-line mr-1"></i> Firebase
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="inline-block bg-blue-500 bg-opacity-20 rounded-full px-3 py-1 text-xs font-semibold text-blue-400">
+                            Mobile App
+                        </span>
+                        <button class="project-preview w-8 h-8 flex items-center justify-center bg-gray-700 hover:bg-accent rounded-full transition-colors">
+                            <i class="ri-eye-line text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 3 -->
+            <div class="project-card bg-gray-800 rounded-xl overflow-hidden shadow-lg" data-categories="ai">
+                <div class="project-image relative">
+                    <img class="w-full h-full object-cover" src="https://source.unsplash.com/random/600x400/?ai,machinelearning" alt="AI Project">
+                    <div class="image-overlay">
+                        <span class="preview-text">View AI Project Details</span>
+                    </div>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2 text-white">Image Recognition</div>
+                    <p class="text-gray-300 text-sm line-clamp-2">
+                        Machine learning model for object detection and classification in images with 95% accuracy.
+                    </p>
+                </div>
+                <div class="px-6 pt-2 pb-4">
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-python-line mr-1"></i> Python
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-tensorflow-line mr-1"></i> TensorFlow
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="inline-block bg-purple-500 bg-opacity-20 rounded-full px-3 py-1 text-xs font-semibold text-purple-400">
+                            AI/ML
+                        </span>
+                        <button class="project-preview w-8 h-8 flex items-center justify-center bg-gray-700 hover:bg-accent rounded-full transition-colors">
+                            <i class="ri-eye-line text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 4 -->
+            <div class="project-card bg-gray-800 rounded-xl overflow-hidden shadow-lg" data-categories="web">
+                <div class="project-image relative">
+                    <img class="w-full h-full object-cover" src="https://source.unsplash.com/random/600x400/?ecommerce,shop" alt="E-commerce">
+                    <div class="image-overlay">
+                        <span class="preview-text">View E-commerce Details</span>
+                    </div>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2 text-white">E-commerce Platform</div>
+                    <p class="text-gray-300 text-sm line-clamp-2">
+                        Full-featured online store with product management, cart, and payment processing.
+                    </p>
+                </div>
+                <div class="px-6 pt-2 pb-4">
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-vuejs-line mr-1"></i> Vue.js
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-nodejs-line mr-1"></i> Express
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-database-2-line mr-1"></i> PostgreSQL
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="inline-block bg-accent bg-opacity-20 rounded-full px-3 py-1 text-xs font-semibold text-accent">
+                            Web Application
+                        </span>
+                        <button class="project-preview w-8 h-8 flex items-center justify-center bg-gray-700 hover:bg-accent rounded-full transition-colors">
+                            <i class="ri-eye-line text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 5 -->
+            <div class="project-card bg-gray-800 rounded-xl overflow-hidden shadow-lg" data-categories="iot">
+                <div class="project-image relative">
+                    <img class="w-full h-full object-cover" src="https://source.unsplash.com/random/600x400/?iot,smart-home" alt="IoT Project">
+                    <div class="image-overlay">
+                        <span class="preview-text">View IoT Project Details</span>
+                    </div>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2 text-white">Smart Home System</div>
+                    <p class="text-gray-300 text-sm line-clamp-2">
+                        IoT solution for home automation with sensor monitoring and remote control capabilities.
+                    </p>
+                </div>
+                <div class="px-6 pt-2 pb-4">
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-arduino-line mr-1"></i> Arduino
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-reactjs-line mr-1"></i> React Native
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-nodejs-line mr-1"></i> Node.js
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="inline-block bg-green-500 bg-opacity-20 rounded-full px-3 py-1 text-xs font-semibold text-green-400">
+                            IoT System
+                        </span>
+                        <button class="project-preview w-8 h-8 flex items-center justify-center bg-gray-700 hover:bg-accent rounded-full transition-colors">
+                            <i class="ri-eye-line text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 6 -->
+            <div class="project-card bg-gray-800 rounded-xl overflow-hidden shadow-lg" data-categories="ai web">
+                <div class="project-image relative">
+                    <img class="w-full h-full object-cover" src="https://source.unsplash.com/random/600x400/?chatbot,ai" alt="Chatbot">
+                    <div class="image-overlay">
+                        <span class="preview-text">View Chatbot Details</span>
+                    </div>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2 text-white">AI Chat Assistant</div>
+                    <p class="text-gray-300 text-sm line-clamp-2">
+                        Conversational AI assistant with natural language processing for customer support.
+                    </p>
+                </div>
+                <div class="px-6 pt-2 pb-4">
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-python-line mr-1"></i> Python
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-reactjs-line mr-1"></i> React
+                        </span>
+                        <span class="tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200">
+                            <i class="ri-openai-line mr-1"></i> OpenAI
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="inline-block bg-purple-500 bg-opacity-20 rounded-full px-3 py-1 text-xs font-semibold text-purple-400">
+                            AI/ML
+                        </span>
+                        <button class="project-preview w-8 h-8 flex items-center justify-center bg-gray-700 hover:bg-accent rounded-full transition-colors">
+                            <i class="ri-eye-line text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div class="modal fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 opacity-0 invisible">
+        <div class="modal-content bg-gray-800 rounded-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="relative">
+                <button class="modal-close absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center bg-gray-700 hover:bg-accent rounded-full transition-colors">
+                    <i class="ri-close-line text-white text-xl"></i>
+                </button>
+                <div class="h-64 w-full bg-gray-700 overflow-hidden">
+                    <img id="modal-image" class="w-full h-full object-cover" src="" alt="Project Preview">
+                </div>
+                <div class="p-6">
+                    <h2 id="modal-title" class="text-2xl font-bold text-white mb-2"></h2>
+                    <p id="modal-category" class="text-accent text-sm mb-4"></p>
+                    <p id="modal-description" class="text-gray-300 mb-6"></p>
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-white mb-3">Technologies Used</h3>
+                        <div id="modal-technologies" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-white mb-3">Key Features</h3>
+                        <ul id="modal-features" class="list-disc list-inside text-gray-300 space-y-1"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center">
+                <div class="text-2xl font-['Pacifico'] text-white mb-4">DevShowcase</div>
+                <p class="text-gray-400 mb-4 max-w-2xl mx-auto">
+                    A technical portfolio demonstrating various projects and implementations across different technologies and platforms.
+                </p>
+                <div class="border-t border-gray-800 mt-8 pt-8">
+                    <p class="text-gray-500 text-sm">
+                        © 2025 Project Showcase. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Project data
+            const projects = [
+                {
+                    id: 1,
+                    title: "Analytics Dashboard",
+                    category: "Web Application",
+                    description: "A comprehensive admin dashboard with real-time data visualization, user management, and reporting capabilities. Built with modern web technologies to provide a seamless user experience with interactive charts and responsive design.",
+                    image: "https://source.unsplash.com/random/800x600/?dashboard,webapp",
+                    technologies: [
+                        { name: "React", icon: "ri-reactjs-line" },
+                        { name: "Node.js", icon: "ri-nodejs-line" },
+                        { name: "MongoDB", icon: "ri-database-2-line" },
+                        { name: "D3.js", icon: "ri-bar-chart-line" }
+                    ],
+                    features: [
+                        "Real-time data visualization with interactive charts",
+                        "Role-based access control for user management",
+                        "Responsive design works on all devices",
+                        "Customizable dashboard widgets",
+                        "Exportable reports in multiple formats"
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Fitness Tracker",
+                    category: "Mobile App",
+                    description: "Cross-platform mobile application for fitness enthusiasts to track workouts, nutrition, and health metrics. Includes social features to connect with friends and share progress.",
+                    image: "https://source.unsplash.com/random/800x600/?fitness,app",
+                    technologies: [
+                        { name: "Flutter", icon: "ri-flutter-line" },
+                        { name: "Firebase", icon: "ri-firebase-line" },
+                        { name: "Google Fit API", icon: "ri-google-line" }
+                    ],
+                    features: [
+                        "Workout tracking with exercise database",
+                        "Nutrition logging with barcode scanning",
+                        "Health metrics monitoring",
+                        "Social features and challenges",
+                        "Personalized recommendations"
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Image Recognition",
+                    category: "AI/ML Project",
+                    description: "Machine learning model trained to recognize and classify objects in images with high accuracy. The system can be integrated into various applications for automated image analysis.",
+                    image: "https://source.unsplash.com/random/800x600/?ai,machinelearning",
+                    technologies: [
+                        { name: "Python", icon: "ri-python-line" },
+                        { name: "TensorFlow", icon: "ri-tensorflow-line" },
+                        { name: "OpenCV", icon: "ri-camera-line" }
+                    ],
+                    features: [
+                        "95% accuracy on test dataset",
+                        "Supports 1000+ object categories",
+                        "Real-time processing capability",
+                        "REST API for integration",
+                        "Custom training capability"
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "E-commerce Platform",
+                    category: "Web Application",
+                    description: "Full-featured online store with product catalog, shopping cart, and secure payment processing. Includes admin panel for inventory and order management.",
+                    image: "https://source.unsplash.com/random/800x600/?ecommerce,shop",
+                    technologies: [
+                        { name: "Vue.js", icon: "ri-vuejs-line" },
+                        { name: "Express", icon: "ri-nodejs-line" },
+                        { name: "PostgreSQL", icon: "ri-database-2-line" },
+                        { name: "Stripe", icon: "ri-bank-card-line" }
+                    ],
+                    features: [
+                        "Product catalog with search and filters",
+                        "Shopping cart and checkout process",
+                        "Secure payment processing",
+                        "Admin dashboard for management",
+                        "Order tracking system"
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Smart Home System",
+                    category: "IoT System",
+                    description: "Internet of Things solution for home automation with sensor monitoring, device control, and automation rules. Users can control their home remotely via mobile app.",
+                    image: "https://source.unsplash.com/random/800x600/?iot,smart-home",
+                    technologies: [
+                        { name: "Arduino", icon: "ri-arduino-line" },
+                        { name: "React Native", icon: "ri-reactjs-line" },
+                        { name: "Node.js", icon: "ri-nodejs-line" },
+                        { name: "MQTT", icon: "ri-wifi-line" }
+                    ],
+                    features: [
+                        "Device control and automation",
+                        "Real-time sensor monitoring",
+                        "Energy usage tracking",
+                        "Remote access via mobile app",
+                        "Custom automation rules"
+                    ]
+                },
+                {
+                    id: 6,
+                    title: "AI Chat Assistant",
+                    category: "AI/ML Project",
+                    description: "Conversational AI assistant that understands natural language queries and provides helpful responses. Can be integrated into websites and applications for automated customer support.",
+                    image: "https://source.unsplash.com/random/800x600/?chatbot,ai",
+                    technologies: [
+                        { name: "Python", icon: "ri-python-line" },
+                        { name: "React", icon: "ri-reactjs-line" },
+                        { name: "OpenAI", icon: "ri-openai-line" },
+                        { name: "Flask", icon: "ri-flask-line" }
+                    ],
+                    features: [
+                        "Natural language understanding",
+                        "Contextual conversation",
+                        "Multi-language support",
+                        "Integration with knowledge bases",
+                        "Customizable responses"
+                    ]
+                }
+            ];
+
+            // DOM elements
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const projectCards = document.querySelectorAll('.project-card');
+            const previewButtons = document.querySelectorAll('.project-preview');
+            const modal = document.querySelector('.modal');
+            const modalClose = document.querySelector('.modal-close');
+            const modalImage = document.getElementById('modal-image');
+            const modalTitle = document.getElementById('modal-title');
+            const modalCategory = document.getElementById('modal-category');
+            const modalDescription = document.getElementById('modal-description');
+            const modalTechnologies = document.getElementById('modal-technologies');
+            const modalFeatures = document.getElementById('modal-features');
+
+            // Filter projects
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    
+                    // Update button states
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('active', 'bg-accent');
+                        btn.classList.add('bg-gray-800');
+                    });
+                    this.classList.add('active', 'bg-accent');
+                    
+                    // Filter projects
+                    projectCards.forEach(card => {
+                        const categories = card.dataset.categories.split(' ');
+                        if (category === 'all' || categories.includes(category)) {
+                            card.classList.remove('hidden');
+                            card.style.display = 'block';
+                        } else {
+                            card.classList.add('hidden');
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Show project preview
+            previewButtons.forEach((button, index) => {
+                button.addEventListener('click', function() {
+                    const project = projects[index];
+                    showModal(project);
+                });
+            });
+
+            // Close modal
+            modalClose.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // Show modal with project details
+            function showModal(project) {
+                modalImage.src = project.image;
+                modalImage.alt = project.title;
+                modalTitle.textContent = project.title;
+                modalCategory.textContent = project.category;
+                modalDescription.textContent = project.description;
+                
+                // Clear previous technologies and features
+                modalTechnologies.innerHTML = '';
+                modalFeatures.innerHTML = '';
+                
+                // Add technologies
+                project.technologies.forEach(tech => {
+                    const techBadge = document.createElement('span');
+                    techBadge.className = 'tech-badge inline-block bg-gray-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-200 mr-2 mb-2';
+                    techBadge.innerHTML = `<i class="${tech.icon} mr-1"></i> ${tech.name}`;
+                    modalTechnologies.appendChild(techBadge);
+                });
+                
+                // Add features
+                project.features.forEach(feature => {
+                    const featureItem = document.createElement('li');
+                    featureItem.textContent = feature;
+                    modalFeatures.appendChild(featureItem);
+                });
+                
+                // Show modal
+                modal.classList.add('active');
+            }
+
+            // Initialize all projects as visible
+            projectCards.forEach(card => {
+                card.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
